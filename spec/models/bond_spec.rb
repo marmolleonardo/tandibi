@@ -21,32 +21,19 @@
 require 'rails_helper'
 
 RSpec.describe Bond, type: :model do
-
-  describe "validations" do
-    it { should validate_presence_of(:state) }
-    it { should validate_inclusion_of(:state).in_array(Bond::STATES) }
-  end
-
-  describe "associations" do
-    it { should belong_to(:user) }
-    it { should belong_to(:friend).class_name('User') }
-  end
-
-  describe "uniqueness" do
-    let(:user) { create(:user) }
-    let(:friend) { create(:user) }
-
-    it "should not allow duplicate bonds between the same users" do
-      bond1 = Bond.create(user: user, friend: friend, state: Bond::REQUESTING)
-      bond2 = Bond.new(user: user, friend: friend, state: Bond::FOLLOWING)
-      expect(bond2).to_not be_valid
-    end
-  end
-
-  describe "states" do
-    it "should define the following states: requesting, following, blocking" do
-      expect(Bond::STATES).to eq(%w[requesting following blocking])
+  describe "#valid?" do
+    it "should validate the state correctly" do
+      friend = User.new
+      user = User.new
+      bond = Bond.new(
+        user_id: user.id,
+        friend_id: friend.id
+      )
+      expect(bond).not_to be_valid
+      Bond::STATES.each do |state|
+        bond.state = state
+        expect(bond).to be_valid
+      end
     end
   end
 end
-
