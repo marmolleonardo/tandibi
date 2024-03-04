@@ -36,4 +36,71 @@ RSpec.describe Bond, type: :model do
       end
     end
   end
+
+  describe "#followings" do
+    it "can list all of the user's followings" do
+      user = create_a_user
+      friend1 = create_a_user
+      friend2 = create_a_user
+      friend3 = create_a_user
+      Bond.create user: user,
+        friend: friend1,
+        state: Bond::FOLLOWING
+      Bond.create user: user,
+        friend: friend2,
+        state: Bond::FOLLOWING
+      Bond.create user: user,
+        friend: friend3,
+        state: Bond::REQUESTING
+      expect(user.followings).to include(friend1, friend2)
+      expect(user.follow_requests).to include(friend3)
+    end
+  end
+
+  describe "#followers" do
+    it "can list all of the user's followers" do
+      user1 = create_a_user
+      user2 = create_a_user
+      fol1 = create_a_user
+      fol2 = create_a_user
+      fol3 = create_a_user
+      fol4 = create_a_user
+      Bond.create user: fol1,
+        friend: user1,
+        state: Bond::FOLLOWING
+      Bond.create user: fol2,
+        friend: user1,
+        state: Bond::FOLLOWING
+      Bond.create user: fol3,
+        friend: user2,
+        state: Bond::FOLLOWING
+      Bond.create user: fol4,
+        friend: user2,
+        state: Bond::REQUESTING
+      expect(user1.followers).to eq([fol1, fol2])
+      expect(user2.followers).to eq([fol3])
+    end
+  end
+
+  describe "#save" do
+    context "when complete data is given" do
+      it "can be persisted" do
+        user = User.create email: "e1@example.org",
+          first_name: "Edwin",
+          username: "e1"
+        friend = User.create email: "a1@example.org",
+          first_name: "Adam",
+          username: "a1"
+        bond = Bond.new(
+          user: user,
+          friend: friend,
+          state: Bond::REQUESTING
+        )
+        bond.save
+        expect(bond).to be_persisted
+        expect(bond.user).to eq user
+        expect(bond.friend).to eq friend
+      end
+    end
+  end
 end

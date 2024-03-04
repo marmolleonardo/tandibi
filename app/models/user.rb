@@ -20,4 +20,10 @@ class User < ApplicationRecord
   validates :email, uniqueness: true
   validates :username, uniqueness: true
   validates :first_name, presence: true
+  validates :email, format: {
+    with: URI::MailTo::EMAIL_REGEXP,
+    message: "must be a valid email address"
+  }
+
+  has_many :posts
 end
