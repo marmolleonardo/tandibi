@@ -32,15 +32,15 @@ class User < ApplicationRecord
     -> { where("bonds.state = ?", Bond::FOLLOWING) },
     through: :bonds,
     source: :friend
-  has_many :follow_requests,
-    -> { where("bonds.state = ?", Bond::REQUESTING) },
-    through: :bonds,
-    source: :friend
   has_many :inward_bonds,
     class_name: "Bond",
     foreign_key: :friend_id
+  has_many :follow_requests,
+    -> { Bond.requesting },
+    through: :bonds,
+    source: :friend
   has_many :followers,
-    -> { where("bonds.state = ?", Bond::FOLLOWING) },
+    -> { Bond.following },
     through: :inward_bonds,
     source: :user
 end
