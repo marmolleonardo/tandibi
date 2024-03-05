@@ -23,4 +23,5 @@ class Post < ApplicationRecord
   belongs_to :user
   belongs_to :thread, class_name: 'Post', optional: true
   has_many :pictures
+  belongs_to :postable, class_name: 'Status'
 end

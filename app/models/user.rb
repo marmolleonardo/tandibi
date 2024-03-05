@@ -2,14 +2,14 @@
 #
 # Table name: users
 #
-#  id            :bigint           not null, primary key
-#  email         :string
-#  first_name    :string
-#  is_public     :boolean
-#  username      :string
-#  last_name :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id         :bigint           not null, primary key
+#  email      :string
+#  first_name :string
+#  is_public  :boolean
+#  last_name  :string
+#  username   :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #
@@ -26,4 +26,21 @@ class User < ApplicationRecord
   }
 
   has_many :posts
+  has_many :bonds
+  has_many :friends, through: :bonds
+  has_many :followings,
+    -> { where("bonds.state = ?", Bond::FOLLOWING) },
+    through: :bonds,
+    source: :friend
+  has_many :follow_requests,
+    -> { where("bonds.state = ?", Bond::REQUESTING) },
+    through: :bonds,
+    source: :friend
+  has_many :inward_bonds,
+    class_name: "Bond",
+    foreign_key: :friend_id
+  has_many :followers,
+    -> { where("bonds.state = ?", Bond::FOLLOWING) },
+    through: :inward_bonds,
+    source: :user
 end

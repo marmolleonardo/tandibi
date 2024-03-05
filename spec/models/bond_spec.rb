@@ -23,8 +23,8 @@ require 'rails_helper'
 RSpec.describe Bond, type: :model do
   describe "#valid?" do
     it "should validate the state correctly" do
-      friend = User.new
-      user = User.new
+      friend = create(:user)
+      user = create(:user)
       bond = Bond.new(
         user_id: user.id,
         friend_id: friend.id
@@ -39,10 +39,10 @@ RSpec.describe Bond, type: :model do
 
   describe "#followings" do
     it "can list all of the user's followings" do
-      user = create_a_user
-      friend1 = create_a_user
-      friend2 = create_a_user
-      friend3 = create_a_user
+      user = create(:user)
+      friend1 = create(:user)
+      friend2 = create(:user)
+      friend3 = create(:user)
       Bond.create user: user,
         friend: friend1,
         state: Bond::FOLLOWING
@@ -59,12 +59,12 @@ RSpec.describe Bond, type: :model do
 
   describe "#followers" do
     it "can list all of the user's followers" do
-      user1 = create_a_user
-      user2 = create_a_user
-      fol1 = create_a_user
-      fol2 = create_a_user
-      fol3 = create_a_user
-      fol4 = create_a_user
+      user1 = create(:user)
+      user2 = create(:user)
+      fol1 = create(:user)
+      fol2 = create(:user)
+      fol3 = create(:user)
+      fol4 = create(:user)
       Bond.create user: fol1,
         friend: user1,
         state: Bond::FOLLOWING
@@ -85,12 +85,8 @@ RSpec.describe Bond, type: :model do
   describe "#save" do
     context "when complete data is given" do
       it "can be persisted" do
-        user = User.create email: "e1@example.org",
-          first_name: "Edwin",
-          username: "e1"
-        friend = User.create email: "a1@example.org",
-          first_name: "Adam",
-          username: "a1"
+        user = create(:user)
+        friend = create(:user)
         bond = Bond.new(
           user: user,
           friend: friend,

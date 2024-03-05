@@ -70,7 +70,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_174907) do
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "first_name"
-    t.string "    last_name"
+    t.string "last_name"
     t.string "email"
     t.boolean "is_public"
     t.datetime "created_at", null: false
